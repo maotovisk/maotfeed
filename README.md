@@ -1,9 +1,10 @@
 # maotfeed.js 
-A discord webhook ~~badly~~ written in Node.JS, based on Aiess and Phillip.
+>A discord webhook ~~badly~~ written in Node.JS, based on Aiess and [Phillip](https://https://github.com/rorre/Phillip).
 
 ## What is it?
-MaotFeed is a live mapfeed that updates nominations, disqualifications, etc.
-![](https://i.imgur.com/w6keFC5.png "Example of qualification")
+>MaotFeed is a live mapfeed that updates nominations, disqualifications, etc, from osu!.
+
+![](https://i.imgur.com/w6keFC5.png)
 
 ## Setting up
 1. Get the WebHook URL and get the ID and the TOKEN:
