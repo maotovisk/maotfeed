@@ -3,6 +3,7 @@ A discord webhook ~~badly~~ written in Node.JS, based on Aiess and Phillip.
 
 ## What is it?
 MaotFeed is a live mapfeed that updates nominations, disqualifications, etc.
+![](https://i.imgur.com/w6keFC5.png "Example of qualification")
 
 ## Setting up
 1. Get the WebHook URL and get the ID and the TOKEN:
