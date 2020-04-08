@@ -164,7 +164,7 @@ function newEvent(data = {
     try {
         let diffs = [];
         let modes = [];
-        for (diff of data.beatmaps) {
+        for (var diff of data.beatmaps) {
             if (diff.difficulty_rating == 0 || diff.deleted_at != null)
                 continue;
             diffs.push({
@@ -173,26 +173,22 @@ function newEvent(data = {
                 "diff": getMapDifficulty(diff.difficulty_rating),
                 "diff_emoji": getMapDifficultyEmoji(diff.difficulty_rating)
             })
-            if (diff.mode == "osu")
+            if (diff.mode == "osu" && !modes.includes("[osu]"))
                 modes.push("[osu]")
-            if (diff.mode == "catch")
+            if (diff.mode == "fruits" && !modes.includes("[catch]"))
                 modes.push("[catch]")
-            if (diff.mode == "mania")
+            if (diff.mode == "mania" && !modes.includes("[mania]"))
                 modes.push("[mania]")
-            if (diff.mode == "taiko")
+            if (diff.mode == "taiko" && !modes.includes("[taiko]"))
                 modes.push("[taiko]")
         }
         diffs.sort(function (a, b) {
             return a.star_rating - b.star_rating;
         })
 
-        let cleanModes = modes.filter(function (elem, index, self) {
-            return index === self.indexOf(elem);
-        })
-
         let listModes = "";
-        for (m of cleanModes) {
-            listModes += m;
+        for (var i = 0; i < modes.length; i++) {
+            listModes += modes[i];
         }
 
         let nominator = null;
@@ -233,14 +229,14 @@ function newEvent(data = {
                         histoBeauty += `:anger_right: ${getUserFromList(eve.user_id, data.users).name} [**${getUserFromList(eve.user_id, data.users).badge}**]  `;
                         break;
                     case "disqualify":
-                        histoBeauty += `:broken_heart:  ${getUserFromList(eve.user_id, data.users).name} [**${getUserFromList(eve.user_id, data.users).badge}**]  `;
+                        histoBeauty += `:broken_heart:  ${getUserFromList(eve.user_id, data.users).name} [**${getUserFromList(eve.user_id, data.users).badge}**]   `;
                         break;
                 }
             }
         }
         if (data.is_nominate && data.is_qualify == false) {
             let msg = new Discord.MessageEmbed().setThumbnail(data.mapset_info.thumb)
-                .addField(`:thought_balloon:  Nominated`, `[${data.mapset_info.artist} - ${data.mapset_info.title}](https://osu.ppy.sh/beatmapsets/${data.mapset_id})\nMapped by [${data.mapset_info.creator}](https://osu.ppy.sh/users/${data.mapset_info.creator_id}) **${listModes}**\n\n${beautyDiffs}`)
+                .addField(`:thought_balloon:  Nominated`, `[${data.mapset_info.artist} - ${data.mapset_info.title}](https://osu.ppy.sh/beatmapsets/${data.mapset_id})\nMapped by [${data.mapset_info.creator}](https://osu.ppy.sh/users/${data.mapset_info.creator_id}) **${listModes}**\n\n${beautyDiffs}`, false)
                 .setFooter(`${nominator.name} [${nominator.badge}]`, nominator.avatar_url)
                 .setColor(Discord.Constants.Colors.AQUA);
             webhookClient.send(`https://osu.ppy.sh/beatmapsets/${data.mapset_id}`, {
@@ -249,7 +245,7 @@ function newEvent(data = {
 
         } else if (data.is_qualify && data.is_nominate) {
             let msg = new Discord.MessageEmbed().setThumbnail(data.mapset_info.thumb)
-                .addField(`:heart:  Qualified`, `[${data.mapset_info.artist} - ${data.mapset_info.title}](https://osu.ppy.sh/beatmapsets/${data.mapset_id})\nMapped by [${data.mapset_info.creator}](https://osu.ppy.sh/users/${data.mapset_info.creator_id}) **${listModes}**\n\n${beautyDiffs}\n\n${histoBeauty}`)
+                .addField(`:heart:  Qualified`, `[${data.mapset_info.artist} - ${data.mapset_info.title}](https://osu.ppy.sh/beatmapsets/${data.mapset_id})\nMapped by [${data.mapset_info.creator}](https://osu.ppy.sh/users/${data.mapset_info.creator_id}) **${listModes}**\n\n${beautyDiffs}\n\n${histoBeauty}`, false)
                 .setFooter(`${nominator.name} [${nominator.badge}]`, nominator.avatar_url)
                 .setColor(Discord.Constants.Colors.RED);
 
@@ -258,10 +254,10 @@ function newEvent(data = {
             });
         } else if (data.is_reset) {
             let _reason = data.reason;
-            if (_reason.length > 128)
-                _reason = _reason.substring(0, 127) + "...";
+            if (_reason.length > 53)
+                _reason = _reason.substring(0, 52) + "...";
             let msg = new Discord.MessageEmbed().setThumbnail(data.mapset_info.thumb)
-                .addField(`:anger_right:  Nomination Reset`, `[${data.mapset_info.artist} - ${data.mapset_info.title}](https://osu.ppy.sh/beatmapsets/${data.mapset_id})\nMapped by [${data.mapset_info.creator}](https://osu.ppy.sh/users/${data.mapset_info.creator_id}) **${listModes}**\n\n${beautyDiffs}\n\n${histoBeauty}`)
+                .addField(`:anger_right:  Nomination Reset`, `[${data.mapset_info.artist} - ${data.mapset_info.title}](https://osu.ppy.sh/beatmapsets/${data.mapset_id})\nMapped by [${data.mapset_info.creator}](https://osu.ppy.sh/users/${data.mapset_info.creator_id}) **${listModes}**\n\n${beautyDiffs}\n\n${histoBeauty}`, false)
                 .setFooter(`${nominator.name} [${nominator.badge}] - "${_reason}"`, nominator.avatar_url)
                 .setColor(Discord.Constants.Colors.GREY);
 
@@ -270,7 +266,7 @@ function newEvent(data = {
             });
         } else if (data.is_rank) {
             let msg = new Discord.MessageEmbed().setThumbnail(data.mapset_info.thumb)
-                .addField(`:sparkling_heart:  Ranked`, `[${data.mapset_info.artist} - ${data.mapset_info.title}](https://osu.ppy.sh/beatmapsets/${data.mapset_id})\nMapped by [${data.mapset_info.creator}](https://osu.ppy.sh/users/${data.mapset_info.creator_id}) **${listModes}**\n\n${beautyDiffs}\n\n${histoBeauty}`)
+                .addField(`:sparkling_heart:  Ranked`, `[${data.mapset_info.artist} - ${data.mapset_info.title}](https://osu.ppy.sh/beatmapsets/${data.mapset_id})\nMapped by [${data.mapset_info.creator}](https://osu.ppy.sh/users/${data.mapset_info.creator_id}) **${listModes}**\n\n${beautyDiffs}\n\n${histoBeauty}`, false)
                 .setColor(Discord.Constants.Colors.DARK_GREEN);
 
             webhookClient.send(`https://osu.ppy.sh/beatmapsets/${data.mapset_id}`, {
@@ -278,10 +274,10 @@ function newEvent(data = {
             });
         } else if (data.is_disqualify) {
             let _reason = data.reason;
-            if (_reason.length > 128)
-                _reason = _reason.substring(0, 127) + "...";
+            if (_reason.length > 53)
+                _reason = _reason.substring(0, 52) + "...";
             let msg = new Discord.MessageEmbed().setThumbnail(data.mapset_info.thumb)
-                .addField(`:broken_heart:  Disqualified`, `[${data.mapset_info.artist} - ${data.mapset_info.title}](https://osu.ppy.sh/beatmapsets/${data.mapset_id})\nMapped by [${data.mapset_info.creator}](https://osu.ppy.sh/users/${data.mapset_info.creator_id}) **${listModes}**\n\n${beautyDiffs}\n\n${histoBeauty}`)
+                .addField(":broken_heart:  Disqualified", `[${data.mapset_info.artist} - ${data.mapset_info.title}](https://osu.ppy.sh/beatmapsets/${data.mapset_id})\nMapped by [${data.mapset_info.creator}](https://osu.ppy.sh/users/${data.mapset_info.creator_id}) **${listModes}**\n\n${beautyDiffs}\n\n${histoBeauty}`)
                 .setFooter(`${nominator.name} [${nominator.badge}] - "${_reason}"`, nominator.avatar_url)
                 .setColor(Discord.Constants.Colors.RED);
 
@@ -290,7 +286,7 @@ function newEvent(data = {
             });
         } else if (data.is_love) {
             let msg = new Discord.MessageEmbed().setThumbnail(data.mapset_info.thumb)
-                .addField(`:heart:  Loved`, `[${data.mapset_info.artist} - ${data.mapset_info.title}](https://osu.ppy.sh/beatmapsets/${data.mapset_id})\nMapped by [${data.mapset_info.creator}](https://osu.ppy.sh/users/${data.mapset_info.creator_id}) **${listModes}**\n\n${beautyDiffs}`)
+                .addField(`:heart:  Loved`, `[${data.mapset_info.artist} - ${data.mapset_info.title}](https://osu.ppy.sh/beatmapsets/${data.mapset_id})\nMapped by [${data.mapset_info.creator}](https://osu.ppy.sh/users/${data.mapset_info.creator_id}) **${listModes}**\n\n${beautyDiffs}`, false)
                 .setFooter(`${nominator.name} [${nominator.badge}]`, nominator.avatar_url)
                 .setColor(Discord.Constants.Colors.LUMINOUS_VIVID_PINK);
 
