@@ -1,5 +1,5 @@
 # maotfeed.js 
->A discord webhook ~~badly~~ written in Node.JS, based on Aiess and [Phillip](https://https://github.com/rorre/Phillip).
+>A discord webhook ~~badly~~ written in Node.JS, based on Aiess and [Phillip](https://github.com/rorre/Phillip).
 
 ## What is it?
 >MaotFeed is a live mapfeed that updates nominations, disqualifications, etc, from osu!.
