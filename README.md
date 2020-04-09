@@ -9,7 +9,7 @@
 ## Setting up
 1. Get the WebHook URL and get the ID and the TOKEN:
 `https://discordapp.com/api/webhooks/_ID_/_TOKEN_`
-3. Create a .private directory and a `keys.json` file inside it:
+3. Create a .private directory and a new `keys.json` file inside it:
 ```json
 {
     "OSU_TOKEN": "your_osu_api_token_here",
