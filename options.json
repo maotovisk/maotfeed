@@ -1,6 +1,6 @@
 {
     "REQUEST_PERIODICITY": 60,
-    "REQUEST_LIMIT": 2,
-    "SHOW_DIFFS": true, 
+    "REQUEST_LIMIT": 1,
+    "SHOW_DIFFS": false, 
     "SHOW_BADGES": true
 }

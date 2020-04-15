@@ -78,7 +78,7 @@ function newEvent(data = {
         for (d of diffs) {
             diffList += `${d.diff_emoji} [${d.star_rating}★] `;
         }
-        if (options.SHOW_DIFFS === false) {
+        if (options.SHOW_DIFFS == false) {
             diffList = "";
         }
         let mapHistory = "";
