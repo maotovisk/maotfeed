@@ -28,29 +28,40 @@ async function fetchUpdates(data) {
         reqtypes += "&types%5B%5D=nomination_reset";
 
     // Request to the beatmapset event pages
-    await fetch(`https://osu.ppy.sh/beatmapsets/events?user=&${reqtypes}`).then(async function (response) {
+    
+    let reqUrl= `https://osu.ppy.sh/beatmapsets/events?user=&${reqtypes}&min_date=&max_date=`;
+    console.log(reqUrl)
+    await fetch(reqUrl).then(async function (response) {
         return response.text();
     }).then(async function (html) {
         var page = new JSSoup(html.toString())
-        var allEventHTML = page.findAll("div", "beatmapset-event");
-        allEventHTML.reverse();
+        let jsons = page.findAll("script");
+        let jsonEvents = null;
+        for (scr of jsons) {
+            if (scr.attrs.id == "json-events") {
+                for (cont of scr.contents) {
+                    jsonEvents = JSON.parse(cont._text);
+                }
+            }
+        }
+        jsonEvents.reverse();
         let x = 0;
 
-        for (var s of allEventHTML) {
+        for (var s of jsonEvents) {
             // Parsing beatmap events
-            let _type = utils.getType(s.text);
-            let _date = moment(s.find("time").attrs.datetime);
-            let _nextEvent = allEventHTML[x + 1];
+            let _type = s.type;
+            let _date = moment(s.created_at);
+            let _nextEvent = jsonEvents[x + 1];
             let _lastEvent;
             if (x > 0)
-                _lastEvent = allEventHTML[x - 1];
+                _lastEvent = jsonEvents[x - 1];
             let _nextDate;
 
-            if (x < allEventHTML.length - 1|| _nextEvent != undefined)
-                _nextDate = moment(_nextEvent.find("time").attrs.datetime);
+            if (x < jsonEvents.length - 1|| _nextEvent != undefined)
+                _nextDate = moment(_nextEvent.created_at);
             let _lastEventDate;
             if (x > 0)
-                _lastEventDate = moment(_lastEvent.find("time").attrs.datetime);
+                _lastEventDate = moment(_lastEvent.created_at);
             if (_date.isSameOrBefore(lastDate) && lastDate != null) {
                 x++;
                 continue;
@@ -61,14 +72,18 @@ async function fetchUpdates(data) {
                 console.log((s.text).toString());
 
             // Regex that finds the MapsetID/DiscussionPostID
-            ids = s.find("a").attrs.href.match(/\/(\d+)+[\/]?/g).map(id => id.replace(/\//g, ''))
-            let _mapsetID = ids[0];
+            if (s.comment)
+                ids = [s.beatmapset.id, s.comment.beatmap_discussion_post_id];
+            else
+                ids = [s.beatmapset.id];
 
+            let _mapsetID = s.beatmapset.id;
             //Request to the beatmap discussion, finding the issue that caused the disqualify.
             discussionHandler.discussionRequest(s, ids, _date, _type, _mapsetID, show_bancho_pop);
             x++;
         }
-        lastDate = moment(allEventHTML[allEventHTML.length - 1].find("time").attrs.datetime).toDate();
+        console.log(jsonEvents.toString());
+        lastDate = moment(jsonEvents[jsonEvents.length - 1].created_at).toDate();
         fs.writeFileSync("./data/lastDate", moment(lastDate).toString(), "utf8");
         console.log("Finished fetching all events at", moment(lastDate).toDate())
     }).catch(async function (err) {

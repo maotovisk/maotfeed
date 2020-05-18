@@ -76,7 +76,7 @@ function newEvent(data = {
         }
         let diffList = "\n\n";
         for (d of diffs) {
-            diffList += `${d.diff_emoji} [${d.star_rating}★] `;
+            diffList += `${d.diff_emoji}`;
         }
         if (options.SHOW_DIFFS == false) {
             diffList = "";

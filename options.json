@@ -1,6 +1,14 @@
 {
     "REQUEST_PERIODICITY": 60,
     "REQUEST_LIMIT": 1,
-    "SHOW_DIFFS": false, 
-    "SHOW_BADGES": true
+    "SHOW_DIFFS": true, 
+    "SHOW_BADGES": true,
+    "emojis": {
+        "easy": "<:easy:700114479765127248>",
+        "normal": "<:normal:700114392762810448>",
+        "hard": "<:hard:700114511377727540>",
+        "insane": "<:insane:700114537881272390>",
+        "extra": "<:extra:700114581540044911>",
+        "extreme": "<:extreme:700114610350456832>"
+    }
 }

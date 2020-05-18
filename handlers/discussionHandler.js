@@ -11,7 +11,7 @@ var throttle = throttledQueue(options.REQUEST_LIMIT, 1000)
 // triggers to get discussion json and parse it
 async function discussionRequest(s, ids, _date, _type, _mapsetID, show_bancho_pop) {
     await throttle(async function () {
-        await fetch(`https://osu.ppy.sh/beatmapsets/${ids[0]}/discussion`).then(async function (response) {
+        await fetch(`https://osu.ppy.sh/beatmapsets/${_mapsetID}/discussion`).then(async function (response) {
             return response.text();
         }).then(async function (newhtml) {
             let discussionPage = new JSSoup(newhtml.toString());
@@ -82,8 +82,9 @@ async function discussionRequest(s, ids, _date, _type, _mapsetID, show_bancho_po
                 indEve++;
             }
             for (d of json_discussions) {
-                if (d.posts == undefined)
+                if (d == null || d.posts == undefined) {
                     continue;
+                }
                 //get the reason
                 for (let i = 0; i < d.posts.length; i++) {
                     if (_type == "disqualify") {
@@ -120,7 +121,7 @@ async function discussionRequest(s, ids, _date, _type, _mapsetID, show_bancho_po
             }
             // Condition when it uses user_id
             if (_type == "nominate" || _type == "love" || _type == "disqualify") {
-                let _userID = s.findAll("a", "user-name")[0].attrs["data-user-id"];
+                let _userID = s.user_id;
                 if (_lastNomination != null && _type== "nominate") {
                     if (_lastNomination.type == "qualify" && _lastNomination.user_id == _userID)
                         _isQualify = true;
