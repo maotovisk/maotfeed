@@ -13,7 +13,11 @@
 ```json
 {
     "OSU_TOKEN": "your_osu_api_token_here",
-    "WEBHOOK": {
+    "WEBHOOK_MAPFEED": {
+        "ID": "webhook_id",
+        "TOKEN": "webhook_token"
+    },
+    "WEBHOOK_GROUPFEED": {
         "ID": "webhook_id",
         "TOKEN": "webhook_token"
     }

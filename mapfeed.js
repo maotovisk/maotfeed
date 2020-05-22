@@ -12,7 +12,8 @@ var lastDate = null;
 async function start() {
     if (fs.existsSync("./data/lastDate")) {
         try {
-            lastDate = moment(fs.readFileSync("./data/lastDate", "utf8")).toDate();
+            lastDateJson = JSON.parse(fs.readFileSync("./data/lastDate.json", "utf8"));
+            lastDate = moment(lastDateJson.datetime);
             console.log("Last date:", lastDate);
         } catch (e) {
             console.warn("Erro ao dar fetch na data:", e);
@@ -28,7 +29,11 @@ async function start() {
         "show_bancho_pop": false,
         "lastDate": lastDate
     });
+    
+    await eventHandler.fetchGroups();
 }
+
+
 
 
 //start funcion here

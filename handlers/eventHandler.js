@@ -1,9 +1,14 @@
-const   JSSoup = require('jssoup').default,
-        fetch = require("node-fetch"),
-        moment = require("moment"),
-        fs = require("fs"),
+const   JSSoup            = require('jssoup').default,
+        fetch             = require("node-fetch"),
+        moment            = require("moment"),
+        fs                = require("fs"),
         discussionHandler = require("./discussionHandler"),
-        utils             = require("./../utils/utils");
+        groupsJson        = require("./../groups/groups.json");
+        utils             = require("./../utils/utils"),
+        throttledQueue    = require('throttled-queue'),
+        options           = require("./../options.json"),
+        throttle          = throttledQueue(options.REQUEST_LIMIT, 2000);
+
 
 // Get updates from beatmap events
 async function fetchUpdates(data) {
@@ -83,12 +88,74 @@ async function fetchUpdates(data) {
             x++;
         }
         console.log(jsonEvents.toString());
-        lastDate = moment(jsonEvents[jsonEvents.length - 1].created_at).toDate();
-        fs.writeFileSync("./data/lastDate", moment(lastDate).toString(), "utf8");
-        console.log("Finished fetching all events at", moment(lastDate).toDate())
+        let currentDate = moment(jsonEvents[jsonEvents.length - 1].created_at).toDate();
+        lastDate = currentDate;
+        let currentJsonDate = {"datetime": currentDate.toUTCString()};
+        fs.writeFileSync("./data/lastDate.json", currentJsonDate, "utf8");
+        console.log("Finished fetching all events at", currentDate.toUTCString());
     }).catch(async function (err) {
         console.warn('Something went wrong.', err);
     });
 }
 
-module.exports = {fetchUpdates}
+async function fetchGroups() {
+    let currentGroups = groupsJson.groups.filter(g => g.check == true);
+    console.log(currentGroups);
+    await throttle(async function () { 
+        for (g of currentGroups) {
+            console.log(`Fetching ${g.title}...`)
+            let reqUrl= `https://osu.ppy.sh/groups/${g.id}`;
+            await fetch(reqUrl).then(async function (response) {
+                return response.text();
+            }).then(async function (html) {
+                var page = new JSSoup(html.toString())
+                let jsons = page.findAll("script");
+                let jsonUsers = null;
+                for (scr of jsons) {
+                    if (scr.attrs.id == "json-users") {
+                        for (cont of scr.contents) {
+                            jsonUsers = JSON.parse(cont._text);
+                        }
+                    }
+                }
+                let parsedUsers = [];
+                for (u of jsonUsers) {
+                    let newUser = {
+                        "username": u.username,
+                        "id": u.id,
+                        "country": u.country.code,
+                        "group_id": u.group_badge.id
+                    }
+                    parsedUsers.push(newUser);
+                }
+                console.log(`Finished fetching ${g.title}...`);
+                console.log(`Cheking for differences between group members...`);
+
+                let newUsers = parsedUsers;
+                let oldUsers = JSON.parse(fs.readFileSync(`./groups/${g.filename}`, "utf8"));
+                let removedUsers = newUsers.filter((user) => {
+                    let found = oldUsers.find(u => user.id == u.id);
+                    if (found == undefined)
+                        return true;
+                    else 
+                        return false;
+                });
+                let addedUsers = oldUsers.filter((user) => {
+                    let found = newUsers.find(u => user.id == u.id);
+                    if (found == undefined)
+                        return true;
+                    else 
+                        return false;
+                });
+                console.log(`Stats for ${g.title}:\nUsers added: ${JSON.stringify(addedUsers)}\nUsers removed: ${JSON.stringify(removedUsers)}\n`)
+                fs.writeFileSync(`./groups/${g.filename}`, JSON.stringify(newUsers), "utf8");
+            }).catch(async function (err) {
+                console.warn('Something went wrong.', err);
+            });
+        }
+    })
+}
+
+
+
+module.exports = {fetchUpdates, fetchGroups}

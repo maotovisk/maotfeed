@@ -1,0 +1,52 @@
+{
+    "groups": [ 
+        {
+        "title": "Nomination Assetment Team",
+        "badge": "NAT",
+        "filename": "nat.json",
+        "id": 7,
+        "check": true 
+        },
+        {
+        "title": "Beatmap Nominators",
+        "badge": "BN",
+        "filename": "bn.json",
+        "id": 28,
+        "check": true 
+        },
+        {
+        "title": "Beatmap Nominators (Probationary)",
+        "badge": "PBN",
+        "filename": "pbn.json",
+        "id": 32,
+        "check": true 
+        },
+        {
+        "title": "Developers",
+        "badge": "DEV",
+        "filename": "dev.json",
+        "id": 11,
+        "check": false 
+        },
+        {
+        "title": "Support Team",
+        "badge": "HELPER",
+        "filename": "helper.json",
+        "id": 22,
+        "check": false 
+        },
+        {
+        "title": "Global Moderation Team",
+        "badge": "GMT",
+        "filename": "gmt.json",
+        "id": 4,
+        "check": true 
+        },
+        {
+        "title": "Alumini",
+        "badge": "ALM",
+        "filename": "alm.json",
+        "id": 16,
+        "check": true 
+        }]
+}

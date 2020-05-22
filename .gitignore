@@ -4,3 +4,8 @@ npm-debug.log
 .env
 .DS_Store
 .private
+groups/alm.json
+groups/nat.json
+groups/bn.json
+groups/pbn.json
+groups/gmt.json

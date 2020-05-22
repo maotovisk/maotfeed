@@ -15,6 +15,7 @@
     "node-fetch": "^2.6.0",
     "node-html-parser": "^1.2.14",
     "nodesu": "^0.7.1",
-    "throttled-queue": "^1.0.7"
+    "throttled-queue": "^1.0.7",
+    "underscore": "^1.10.2"
   }
 }
