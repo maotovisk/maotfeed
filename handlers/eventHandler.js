@@ -3,8 +3,9 @@ const   JSSoup            = require('jssoup').default,
         moment            = require("moment"),
         fs                = require("fs"),
         discussionHandler = require("./discussionHandler"),
-        groupsJson        = require("./../groups/groups.json");
+        groupsJson        = require("./../groups/groups.json"),
         utils             = require("./../utils/utils"),
+        webhookHandler    = require("./../handlers/webhookHandler"),
         throttledQueue    = require('throttled-queue'),
         options           = require("./../options.json"),
         throttle          = throttledQueue(options.REQUEST_LIMIT, 2000);
@@ -35,7 +36,6 @@ async function fetchUpdates(data) {
     // Request to the beatmapset event pages
     
     let reqUrl= `https://osu.ppy.sh/beatmapsets/events?user=&${reqtypes}&min_date=&max_date=`;
-    console.log(reqUrl)
     await fetch(reqUrl).then(async function (response) {
         return response.text();
     }).then(async function (html) {
@@ -71,7 +71,7 @@ async function fetchUpdates(data) {
                 x++;
                 continue;
             } 
-            console.log("New event!", _type, "at", _date.toDate());
+            console.log("New event!", _type, "at", _date.toDate().toUTCString());
 
             if (_type == "unknown")
                 console.log((s.text).toString());
@@ -87,11 +87,10 @@ async function fetchUpdates(data) {
             discussionHandler.discussionRequest(s, ids, _date, _type, _mapsetID, show_bancho_pop);
             x++;
         }
-        console.log(jsonEvents.toString());
         let currentDate = moment(jsonEvents[jsonEvents.length - 1].created_at).toDate();
         lastDate = currentDate;
         let currentJsonDate = {"datetime": currentDate.toUTCString()};
-        fs.writeFileSync("./data/lastDate.json", currentJsonDate, "utf8");
+        fs.writeFileSync("./data/lastDate.json", JSON.stringify(currentJsonDate), "utf8");
         console.log("Finished fetching all events at", currentDate.toUTCString());
     }).catch(async function (err) {
         console.warn('Something went wrong.', err);
@@ -100,7 +99,6 @@ async function fetchUpdates(data) {
 
 async function fetchGroups() {
     let currentGroups = groupsJson.groups.filter(g => g.check == true);
-    console.log(currentGroups);
     await throttle(async function () { 
         for (g of currentGroups) {
             console.log(`Fetching ${g.title}...`)
@@ -124,30 +122,47 @@ async function fetchGroups() {
                         "username": u.username,
                         "id": u.id,
                         "country": u.country.code,
-                        "group_id": u.group_badge.id
+                        "group_id": u.group_badge.id,
+                        "avatar_url": u.avatar_url
                     }
                     parsedUsers.push(newUser);
                 }
+                let newUsers = parsedUsers;
+
                 console.log(`Finished fetching ${g.title}...`);
                 console.log(`Cheking for differences between group members...`);
 
-                let newUsers = parsedUsers;
-                let oldUsers = JSON.parse(fs.readFileSync(`./groups/${g.filename}`, "utf8"));
-                let removedUsers = newUsers.filter((user) => {
-                    let found = oldUsers.find(u => user.id == u.id);
-                    if (found == undefined)
-                        return true;
-                    else 
-                        return false;
-                });
-                let addedUsers = oldUsers.filter((user) => {
-                    let found = newUsers.find(u => user.id == u.id);
-                    if (found == undefined)
-                        return true;
-                    else 
-                        return false;
-                });
-                console.log(`Stats for ${g.title}:\nUsers added: ${JSON.stringify(addedUsers)}\nUsers removed: ${JSON.stringify(removedUsers)}\n`)
+                if (fs.existsSync(`./groups/${g.filename}`)) {
+                    let oldUsers = JSON.parse(fs.readFileSync(`./groups/${g.filename}`, "utf8"));
+                    let addedUsers = newUsers.filter((user) => {
+                        let found = oldUsers.find(u => user.id == u.id);
+                        if (found == undefined)
+                            return true;
+                        else 
+                            return false;
+                    });
+                    let removedUsers = oldUsers.filter((user) => {
+                        let found = newUsers.find(u => user.id == u.id);
+                        if (found == undefined)
+                            return true;
+                        else 
+                            return false;
+                    });
+                    if (removedUsers.length > 0) {
+                        for (removedUser of removedUsers) {
+                            webhookHandler.userRemoved({"user": removedUser, "group": g});
+                        }
+                    }
+                    
+                    if (addedUsers.length > 0) {
+                        for (addedUser of addedUsers) {
+                            webhookHandler.userAdded({"user": addedUser, "group": g});
+                        }
+                    }
+                    console.log(`Stats for ${g.title}:\nUsers added: ${JSON.stringify(addedUsers)}\nUsers removed: ${JSON.stringify(removedUsers)}\n`)
+                } else {
+                    console.log(`First time running, fetched all ${g.title} data.`)
+                }
                 fs.writeFileSync(`./groups/${g.filename}`, JSON.stringify(newUsers), "utf8");
             }).catch(async function (err) {
                 console.warn('Something went wrong.', err);

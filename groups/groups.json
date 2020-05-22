@@ -1,10 +1,11 @@
 {
     "groups": [ 
         {
-        "title": "Nomination Assetment Team",
+        "title": "Nomination Assessment Team",
         "badge": "NAT",
         "filename": "nat.json",
         "id": 7,
+        "color": "#EB8C47",
         "check": true 
         },
         {
@@ -12,6 +13,7 @@
         "badge": "BN",
         "filename": "bn.json",
         "id": 28,
+        "color": "#A347EB",
         "check": true 
         },
         {
@@ -19,6 +21,7 @@
         "badge": "PBN",
         "filename": "pbn.json",
         "id": 32,
+        "color": "#A347EB",
         "check": true 
         },
         {
@@ -26,6 +29,7 @@
         "badge": "DEV",
         "filename": "dev.json",
         "id": 11,
+        "color": "#EB47D0",
         "check": false 
         },
         {
@@ -33,6 +37,7 @@
         "badge": "HELPER",
         "filename": "helper.json",
         "id": 22,
+        "color": "#99EB47",
         "check": false 
         },
         {
@@ -40,6 +45,7 @@
         "badge": "GMT",
         "filename": "gmt.json",
         "id": 4,
+        "color": "#99EB47",
         "check": true 
         },
         {
@@ -47,6 +53,7 @@
         "badge": "ALM",
         "filename": "alm.json",
         "id": 16,
-        "check": true 
+        "color": "#999999",
+        "check": false 
         }]
 }

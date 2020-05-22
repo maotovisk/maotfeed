@@ -1,14 +1,14 @@
 {
     "REQUEST_PERIODICITY": 60,
     "REQUEST_LIMIT": 1,
-    "SHOW_DIFFS": true, 
+    "SHOW_DIFFS": true,
     "SHOW_BADGES": true,
     "emojis": {
-        "easy": "<:easy:700114479765127248>",
-        "normal": "<:normal:700114392762810448>",
-        "hard": "<:hard:700114511377727540>",
-        "insane": "<:insane:700114537881272390>",
-        "extra": "<:extra:700114581540044911>",
-        "extreme": "<:extreme:700114610350456832>"
+        "easy": "<:easy:705169674416947241>",
+        "normal": "<:normal:705169714896175174>",
+        "hard": "<:hard:705169698454503434>",
+        "insane": "<:insane:705169705932947518>",
+        "extra": "<:extra:705169689671762002>",
+        "extreme": "<:extreme:705169682432524418>"
     }
 }

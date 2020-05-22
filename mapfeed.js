@@ -5,20 +5,20 @@ const   moment          = require("moment"),
 
 //Check the last datetime of recieved reports.
 var lastDate = null;
- 
-
-
 
 async function start() {
-    if (fs.existsSync("./data/lastDate")) {
+    if (fs.existsSync("./data/lastDate.json")) {
         try {
             lastDateJson = JSON.parse(fs.readFileSync("./data/lastDate.json", "utf8"));
             lastDate = moment(lastDateJson.datetime);
-            console.log("Last date:", lastDate);
+            console.log("Last date: ", lastDate.toDate().toUTCString());
         } catch (e) {
             console.warn("Erro ao dar fetch na data:", e);
         }
+    } else {
+        console.log("Running for the first time, fetching all available events.")
     }
+
     await eventHandler.fetchUpdates({
         "disqualify": true,
         "nominate": true,

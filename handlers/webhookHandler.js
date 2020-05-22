@@ -2,10 +2,11 @@ const Discord = require("discord.js"),
     utils = require("./../utils/utils"),
     options         = require("./../options.json");
 
-const WEBHOOK_CREDENTIALS = require("./../.private/keys.json").WEBHOOK;
+const WEBHOOK_CREDENTIALS = require("./../.private/keys.json");
 
 //WebHook
-const webhookClient = new Discord.WebhookClient(WEBHOOK_CREDENTIALS.ID, WEBHOOK_CREDENTIALS.TOKEN);
+const webhookClientMapfeed = new Discord.WebhookClient(WEBHOOK_CREDENTIALS.WEBHOOK_MAPFEED.ID, WEBHOOK_CREDENTIALS.WEBHOOK_MAPFEED.TOKEN),
+ webhookClientGroupfeed = new Discord.WebhookClient(WEBHOOK_CREDENTIALS.WEBHOOK_GROUPFEED.ID, WEBHOOK_CREDENTIALS.WEBHOOK_GROUPFEED.TOKEN);
 
 function newEvent(data = {
     "user_id": user_id,
@@ -117,7 +118,7 @@ function newEvent(data = {
                 .addField(`:thought_balloon:  Nominated`, `[${data.mapset_info.artist} - ${data.mapset_info.title}](https://osu.ppy.sh/beatmapsets/${data.mapset_id})\nMapped by [${data.mapset_info.creator}](https://osu.ppy.sh/users/${data.mapset_info.creator_id}) **${listModes}**${diffList}`, false)
                 .setFooter(`${nominator.name} [${nominator.badge}]`, nominator.avatar_url)
                 .setColor(Discord.Constants.Colors.AQUA);
-            webhookClient.send(`https://osu.ppy.sh/beatmapsets/${data.mapset_id}`, {
+            webhookClientMapfeed.send(`https://osu.ppy.sh/beatmapsets/${data.mapset_id}`, {
                 embeds: [msg],
             });
 
@@ -127,7 +128,7 @@ function newEvent(data = {
                 .setFooter(`${nominator.name} [${nominator.badge}]`, nominator.avatar_url)
                 .setColor(Discord.Constants.Colors.RED);
 
-            webhookClient.send(`https://osu.ppy.sh/beatmapsets/${data.mapset_id}`, {
+            webhookClientMapfeed.send(`https://osu.ppy.sh/beatmapsets/${data.mapset_id}`, {
                 embeds: [msg],
             });
         } else if (data.is_reset) {
@@ -139,7 +140,7 @@ function newEvent(data = {
                 .setFooter(`${nominator.name} [${nominator.badge}] - "${_reason}"`, nominator.avatar_url)
                 .setColor(Discord.Constants.Colors.GREY);
 
-            webhookClient.send(`${data.discussion_post}`, {
+            webhookClientMapfeed.send(`${data.discussion_post}`, {
                 embeds: [msg],
             });
         } else if (data.is_rank) {
@@ -147,7 +148,7 @@ function newEvent(data = {
                 .addField(`:sparkling_heart:  Ranked`, `[${data.mapset_info.artist} - ${data.mapset_info.title}](https://osu.ppy.sh/beatmapsets/${data.mapset_id})\nMapped by [${data.mapset_info.creator}](https://osu.ppy.sh/users/${data.mapset_info.creator_id}) **${listModes}**${diffList}\n\n${mapHistory}`, false)
                 .setColor(Discord.Constants.Colors.DARK_GREEN);
 
-            webhookClient.send(`https://osu.ppy.sh/beatmapsets/${data.mapset_id}`, {
+            webhookClientMapfeed.send(`https://osu.ppy.sh/beatmapsets/${data.mapset_id}`, {
                 embeds: [msg],
             });
         } else if (data.is_disqualify) {
@@ -159,7 +160,7 @@ function newEvent(data = {
                 .setFooter(`${nominator.name} [${nominator.badge}] - "${_reason}"`, nominator.avatar_url)
                 .setColor(Discord.Constants.Colors.RED);
 
-            webhookClient.send(`${data.discussion_post}`, {
+            webhookClientMapfeed.send(`${data.discussion_post}`, {
                 embeds: [msg],
             });
         } else if (data.is_love) {
@@ -168,7 +169,7 @@ function newEvent(data = {
                 .setFooter(`${nominator.name} [${nominator.badge}]`, nominator.avatar_url)
                 .setColor(Discord.Constants.Colors.LUMINOUS_VIVID_PINK);
 
-            webhookClient.send(`https://osu.ppy.sh/beatmapsets/${data.mapset_id}`, {
+            webhookClientMapfeed.send(`https://osu.ppy.sh/beatmapsets/${data.mapset_id}`, {
                 embeds: [msg],
             });
         }
@@ -176,5 +177,18 @@ function newEvent(data = {
         console.log("Error:", e);
     }
 }
+async function userRemoved(data = {"user": user, "group": group }) {
+    let msg = new Discord.MessageEmbed().setThumbnail(data.user.avatar_url)
+    .addField(`:arrow_down: Removed`,`:flag_${data.user.country.toLowerCase()}: [${data.user.username}](https://osu.ppy.sh/users/${data.user.id}) \nhas been removed from [${data.group.title}](https://osu.ppy.sh/groups/${data.group.id})`)
+    .setColor(`${data.group.color}`);
+    webhookClientGroupfeed.send(msg);
+}
 
-module.exports = {newEvent}
+async function userAdded(data = {"user": user, "group": group }) {
+    let msg = new Discord.MessageEmbed().setThumbnail(data.user.avatar_url)
+    .addField(`:arrow_up: Added`,`:flag_${data.user.country.toLowerCase()}: [${data.user.username}](https://osu.ppy.sh/users/${data.user.id}) \nhas been added to [${data.group.title}](https://osu.ppy.sh/groups/${data.group.id})`)
+    .setColor(`${data.group.color}`);
+    webhookClientGroupfeed.send(msg);
+}
+
+module.exports = {newEvent, userRemoved, userAdded}
