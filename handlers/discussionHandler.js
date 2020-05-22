@@ -81,26 +81,9 @@ async function discussionRequest(s, ids, _date, _type, _mapsetID, show_bancho_po
                 }
                 indEve++;
             }
-            for (d of json_discussions) {
-                if (d == null || d.posts == undefined) {
-                    continue;
-                }
-                //get the reason
-                for (let i = 0; i < d.posts.length; i++) {
-                    if (_type == "disqualify") {
-                        if (d.posts[i].id == _lastDisqualify.comment.beatmap_discussion_post_id)
-                            _reason = d.posts[i].message;
-                    }
-                    //
-                    if (_type == "nomination_reset" && _lastReset != null) {
-                        if (d.posts[i].id == _lastReset.comment.beatmap_discussion_post_id)
-                            _reason = d.posts[i].message;
-                    }
-                }
-            }
-
             // call newReset() Function here
             if (_type == "nomination_reset" && _lastReset != null && moment(_lastReset.created_at).isSame(_date)) {
+                _reason = s.discussion.starting_post.message;
                 webhookHandler.newEvent({
                     "user_id": _lastReset.user_id,
                     "mapset_id": _mapsetID,
@@ -166,6 +149,7 @@ async function discussionRequest(s, ids, _date, _type, _mapsetID, show_bancho_po
                 // call newDisqualify() Function here
                 if (_type == "disqualify") {
                     //use _lastDisqualify
+                    _reason = s.discussion.starting_post.message;
                     webhookHandler.newEvent({
                         "user_id": _userID,
                         "mapset_id": _mapsetID,
