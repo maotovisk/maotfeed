@@ -41,6 +41,7 @@ async function fetchUpdates(data) {
     }).then(async function (html) {
         var page = new JSSoup(html.toString())
         let jsons = page.findAll("script");
+        console.log(page.toString());
         let jsonEvents = null;
         for (scr of jsons) {
             if (scr.attrs.id == "json-events") {

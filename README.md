@@ -11,10 +11,11 @@ Check out our [discord server](https://discord.gg/26hHK7E)
 ## Getting started
 1. Get the WebHook URL and get the ID and the TOKEN:
 `https://discordapp.com/api/webhooks/_ID_/_TOKEN_`
-3. Create a .private directory and a new `keys.json` file inside it:
+3. Create a .private directory and a new `clients.json` file inside it (yes you can use multiple webhook clients):
 ```json
 {
     "OSU_TOKEN": "your_osu_api_token_here",
+    "clients": [{
     "WEBHOOK_MAPFEED": {
         "ID": "webhook_id",
         "TOKEN": "webhook_token"
@@ -22,7 +23,7 @@ Check out our [discord server](https://discord.gg/26hHK7E)
     "WEBHOOK_GROUPFEED": {
         "ID": "webhook_id",
         "TOKEN": "webhook_token"
-    }
+    }}]
 }
 ```
 4. `npm install` 

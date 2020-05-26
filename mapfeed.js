@@ -13,7 +13,7 @@ async function start() {
             lastDate = moment(lastDateJson.datetime);
             console.log("Last date: ", lastDate.toDate().toUTCString());
         } catch (e) {
-            console.warn("Erro ao dar fetch na data:", e);
+            console.warn("Error getting date:", e);
         }
     } else {
         console.log("Running for the first time, fetching all available events.")
