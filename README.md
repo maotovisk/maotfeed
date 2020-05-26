@@ -45,4 +45,4 @@ Check out our [discord server](https://discord.gg/26hHK7E)
 ## Customizing
 
 By default MaotFeed uses custom emotes that are required to be added to the server.
-You can find them [here](https://github.com/maotovisk/maotfeed/issues/1), or you can create your own by just changing the emoji name at `options.json`.
+You can find them [here](https://github.com/maotovisk/maotfeed/issues/1), or you can create your own by just changing the emoji name at `clients.json`.
