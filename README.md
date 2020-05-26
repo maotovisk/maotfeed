@@ -16,14 +16,26 @@ Check out our [discord server](https://discord.gg/26hHK7E)
 {
     "OSU_TOKEN": "your_osu_api_token_here",
     "clients": [{
-    "WEBHOOK_MAPFEED": {
-        "ID": "webhook_id",
-        "TOKEN": "webhook_token"
-    },
-    "WEBHOOK_GROUPFEED": {
-        "ID": "webhook_id",
-        "TOKEN": "webhook_token"
-    }}]
+        "WEBHOOK_MAPFEED": {
+            "ID": "webhook_id",
+            "TOKEN": "webhook_token"
+        },
+        "WEBHOOK_GROUPFEED": {
+            "ID": "webhook_id",
+            "TOKEN": "webhook_token"
+        },
+        "SHOW_DIFFS": true,
+        "SHOW_BADGES": true,
+            "emojis": {
+                "easy": "<:easy:705169674416947241>",
+                "normal": "<:normal:705169714896175174>",
+                "hard": "<:hard:705169698454503434>",
+                "insane": "<:insane:705169705932947518>",
+                "extra": "<:extra:705169689671762002>",
+                "extreme": "<:extreme:705169682432524418>"
+             }
+         }
+    ]
 }
 ```
 4. `npm install` 
