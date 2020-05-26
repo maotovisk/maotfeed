@@ -1,4 +1,3 @@
-const options = require("../options.json")
 
 function getType(text) {
     if (text.includes("Nominated by"))
