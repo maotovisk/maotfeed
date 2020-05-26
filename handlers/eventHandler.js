@@ -8,7 +8,8 @@ const   JSSoup            = require('jssoup').default,
         webhookHandler    = require("./../handlers/webhookHandler"),
         throttledQueue    = require('throttled-queue'),
         options           = require("./../options.json"),
-        throttle          = throttledQueue(options.REQUEST_LIMIT, 2000);
+        throttle          = throttledQueue(options.REQUEST_LIMIT, 2000),
+        hooman            = require('hooman');
 
 
 // Get updates from beatmap events
@@ -36,12 +37,11 @@ async function fetchUpdates(data) {
     // Request to the beatmapset event pages
     
     let reqUrl= `https://osu.ppy.sh/beatmapsets/events?user=&${reqtypes}&min_date=&max_date=`;
-    await fetch(reqUrl).then(async function (response) {
-        return response.text();
+    await hooman(reqUrl).then(async function (response) {
+        return response.body;
     }).then(async function (html) {
         var page = new JSSoup(html.toString())
         let jsons = page.findAll("script");
-        console.log(page.toString());
         let jsonEvents = null;
         for (scr of jsons) {
             if (scr.attrs.id == "json-events") {
@@ -104,8 +104,8 @@ async function fetchGroups() {
         for (g of currentGroups) {
             console.log(`Fetching ${g.title}...`)
             let reqUrl= `https://osu.ppy.sh/groups/${g.id}`;
-            await fetch(reqUrl).then(async function (response) {
-                return response.text();
+            await hooman(reqUrl).then(async function (response) {
+                return response.body;
             }).then(async function (html) {
                 var page = new JSSoup(html.toString())
                 let jsons = page.findAll("script");

@@ -183,7 +183,7 @@ function newEvent(data = {
 }
 async function userRemoved(data = {"user": user, "group": group }) {
     for (webHook of clients.clients) {
-        let webhookClientGroupfeed = new Discord.WebhookClient(webHook.WEBHOOK_MAPFEED.ID, webHook.WEBHOOK_MAPFEED.TOKEN);
+        let webhookClientGroupfeed = new Discord.WebhookClient(webHook.WEBHOOK_GROUPFEED.ID, webHook.WEBHOOK_GROUPFEED.TOKEN);
         let msg = new Discord.MessageEmbed().setThumbnail(data.user.avatar_url)
         .addField(`:arrow_down: Removed`,`:flag_${data.user.country.toLowerCase()}: [${data.user.username}](https://osu.ppy.sh/users/${data.user.id}) \nhas been removed from [${data.group.title}](https://osu.ppy.sh/groups/${data.group.id})`)
         .setColor(`${data.group.color}`);

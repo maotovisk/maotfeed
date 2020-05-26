@@ -3,7 +3,8 @@ const   JSSoup = require('jssoup').default,
         webhookHandler = require("./webhookHandler"),
         throttledQueue = require('throttled-queue'),
         options         = require("./../options.json"),
-        moment          = require("moment");
+        moment          = require("moment"),
+        hooman            = require('hooman');
 
 //define the limit of requests per second
 var throttle = throttledQueue(options.REQUEST_LIMIT, 1000)
@@ -11,8 +12,8 @@ var throttle = throttledQueue(options.REQUEST_LIMIT, 1000)
 // triggers to get discussion json and parse it
 async function discussionRequest(s, ids, _date, _type, _mapsetID, show_bancho_pop) {
     await throttle(async function () {
-        await fetch(`https://osu.ppy.sh/beatmapsets/${_mapsetID}/discussion`).then(async function (response) {
-            return response.text();
+        await hooman(`https://osu.ppy.sh/beatmapsets/${_mapsetID}/discussion`).then(async function (response) {
+            return response.body;
         }).then(async function (newhtml) {
             let discussionPage = new JSSoup(newhtml.toString());
             let jsons = discussionPage.findAll("script");
