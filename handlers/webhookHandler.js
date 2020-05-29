@@ -193,6 +193,7 @@ async function userRemoved(data = {"user": user, "group": group }) {
 
 async function userAdded(data = {"user": user, "group": group }) {
     for (webHook of clients.clients) {
+        let webhookClientGroupfeed = new Discord.WebhookClient(webHook.WEBHOOK_GROUPFEED.ID, webHook.WEBHOOK_GROUPFEED.TOKEN);
         let msg = new Discord.MessageEmbed().setThumbnail(data.user.avatar_url)
         .addField(`:arrow_up: Added`,`:flag_${data.user.country.toLowerCase()}: [${data.user.username}](https://osu.ppy.sh/users/${data.user.id}) \nhas been added to [${data.group.title}](https://osu.ppy.sh/groups/${data.group.id})`)
         .setColor(`${data.group.color}`);
