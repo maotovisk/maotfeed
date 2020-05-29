@@ -18,13 +18,13 @@ function getUserFromList(id, userlist) {
     try {
     for (user of userlist) {
         if (id == user.id) {
-            if (user.group_badge == undefined){
+            if (user.groups[0] == undefined){
                 return {
                     "name": user.username,
                     "badge": "EX-BN"
                 };
             }
-            if (user.group_badge.identifier == "bng_limited") {
+            if (user.groups[0].identifier == "bng_limited") {
                 return {
                 "name": user.username,
                 "badge": "PBN"
@@ -33,7 +33,7 @@ function getUserFromList(id, userlist) {
              else {
                 return {
                     "name": user.username,
-                    "badge": user.group_badge.short_name
+                    "badge": user.groups[0].short_name
                 };
              }
         }

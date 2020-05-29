@@ -123,7 +123,7 @@ async function fetchGroups() {
                         "username": u.username,
                         "id": u.id,
                         "country": u.country.code,
-                        "group_id": u.group_badge.id,
+                        "group_id": u.groups[0].id,
                         "avatar_url": u.avatar_url
                     }
                     parsedUsers.push(newUser);

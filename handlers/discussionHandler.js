@@ -57,7 +57,6 @@ async function discussionRequest(s, ids, _date, _type, _mapsetID, show_bancho_po
                 switch (e.type) {
                     case "rank":
                         _rank = e;
-                        _history.push();
                         break;
                     case "nominate":
                         _lastNomination = e;

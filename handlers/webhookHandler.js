@@ -61,7 +61,7 @@ function newEvent(data = {
             let nominator = null;
             for (u of data.users) {
                 if (data.user_id == u.id) {
-                    if (u.group_badge.identifier == "bng_limited") {
+                    if (u.groups[0].identifier == "bng_limited") {
                         nominator = {
                             "name": u.username,
                             "badge": "PROBATION",
@@ -71,7 +71,7 @@ function newEvent(data = {
                     } else {
                         nominator = {
                             "name": u.username,
-                            "badge": u.group_badge.short_name,
+                            "badge": u.groups[0].short_name,
                             "id": u.id,
                             "avatar_url": u.avatar_url
                         } 
