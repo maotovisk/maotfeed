@@ -133,7 +133,7 @@ async function fetchGroups() {
                 console.log(`Finished fetching ${g.title}...`);
                 console.log(`Cheking for differences between group members...`);
 
-                if (fs.existsSync(`./groups/${g.filename}`)) {
+                if (fs.existsSync(`./groups/${g.filename}`) && jsonUsers!= null) {
                     let oldUsers = JSON.parse(fs.readFileSync(`./groups/${g.filename}`, "utf8"));
                     let addedUsers = newUsers.filter((user) => {
                         let found = oldUsers.find(u => user.id == u.id);
