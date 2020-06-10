@@ -10,12 +10,12 @@
   "license": "ISC",
   "dependencies": {
     "discord.js": "^12.2.0",
-    "got": "^11.2.0",
+    "got": "^11.3.0",
     "hooman": "^1.2.5",
     "jssoup": "0.0.11",
     "moment": "^2.26.0",
     "node-fetch": "^2.6.0",
-    "node-html-parser": "^1.2.18",
+    "node-html-parser": "^1.2.19",
     "nodesu": "^0.7.2",
     "throttled-queue": "^1.0.7",
     "underscore": "^1.10.2"
