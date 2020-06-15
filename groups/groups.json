@@ -54,6 +54,6 @@
         "filename": "alm.json",
         "id": 16,
         "color": "#999999",
-        "check": false 
+        "check": true
         }]
 }
