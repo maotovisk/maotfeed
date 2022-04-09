@@ -13,7 +13,7 @@
     "got": "^11.3.0",
     "hooman": "^1.2.5",
     "jssoup": "0.0.11",
-    "moment": "^2.26.0",
+    "moment": "^2.29.2",
     "node-fetch": "^2.6.0",
     "node-html-parser": "^1.2.19",
     "nodesu": "^0.7.2",
